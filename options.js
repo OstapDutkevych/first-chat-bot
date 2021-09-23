@@ -10,6 +10,7 @@ module.exports = {
         })
     },
      againOptions: {
+         "parse_mode": "HTML",
         reply_markup: JSON.stringify({
             inline_keyboard:[
                 [{text: 'Play again and try guess',callback_data:'/again' }],

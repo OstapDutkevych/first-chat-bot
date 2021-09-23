@@ -7,7 +7,9 @@ const bot = new Telegram(token, {polling:true});
 
 const chats ={};
 
-
+const optionMarkupLang = {
+    "parse_mode": "HTML",
+};
 
 const startGame = async (chatId)=> {
     await bot.sendMessage(chatId, `I'll guess the number from 0 to 9 and you have to guess the number`)
@@ -27,11 +29,14 @@ const start = () => {
         const {text, chat} = msg
 
         if(text === "/start"){
+            console.log(msg)
             await bot.sendSticker(chat.id,'https://tlgrm.ru/_/stickers/ea5/382/ea53826d-c192-376a-b766-e5abc535f1c9/7.webp')
-            return bot.sendMessage(chat.id, `Hello ${chat.first_name} You are Welcome!! ТИ ПІТУХ ЙОБАНИЙ`)
+            return bot.sendMessage(chat.id, `Hello ${chat.first_name.bold()} You are Welcome!!`, optionMarkupLang)
         }
         if(text === "/info"){
-            return bot.sendMessage(chat.id, `Your Name: ${chat.first_name} and Surname: ${chat.last_name}`)
+            console.log(msg)
+            return bot.sendMessage(chat.id, `Your Name: ${chat.first_name.bold()} and Surname: ${chat.last_name.bold()}`, optionMarkupLang)
+
         }
         if(text === "/game"){
            return startGame(chat.id)
@@ -40,17 +45,16 @@ const start = () => {
     })
 
     bot.on('callback_query', async msg => {
-        console.log(msg)
-        console.log(chats)
         const { data, message:{chat}} = msg;
 
         if(data === '/again'){
             return startGame(chat.id);
         }
-        if(data === chats[chat.id]){
-            return bot.sendMessage(chat.id, `My congratulations, you guessed the number: ${chats[chat.id]}`, againOptions)
+        if(+data === +chats[chat.id]){
+            return bot.sendMessage(chat.id, `My congratulations, you guessed the number: ${chats[chat.id]}`.bold(), againOptions)
         }else {
-            return bot.sendMessage(chat.id, `Unfortunately you didn't guess, I guessed the number: ${chats[chat.id]}`, againOptions)
+            console.log(chats)
+            return bot.sendMessage(chat.id, `Unfortunately you didn't guess, I guessed the number:   ${chats[chat.id]}` , againOptions)
         }
 
     })
